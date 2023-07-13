@@ -67,8 +67,12 @@ const Paint = () => {
             </div>
             <div id='box'>
                 <div id='content'>
-                <img className="header" src={headerImage} alt="Header" />
+                {/*  The header images */}
+                <img className="header" src={headerImage} alt="Header" style={{width: "100%", height: "auto"}}/>
+
+                {/*  The paintings */}
                 <div className="content-container">
+                    {/* slice each page so that it only show 'paintingsPerPage' Arts. */}
                     {paintings.slice((currentPage - 1) * paintingsPerPage, currentPage * paintingsPerPage).map((painting, index) => (
                         <div className="painting-container" key={index}>
                             <img 
@@ -80,10 +84,20 @@ const Paint = () => {
                         </div>
                         ))}
                     </div>
-                    <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+                    <button 
+                        onClick={() => {
+                            setCurrentPage(currentPage - 1);
+                            window.scrollTo(0, 0);
+                        }}
+                        disabled={currentPage === 1}>
                         Previous
                     </button>
-                    <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage * paintingsPerPage >= paintings.length}>
+                    <button 
+                        onClick={() => {
+                            setCurrentPage(currentPage + 1);
+                            window.scrollTo(0, 0);
+                        }}
+                    disabled={currentPage * paintingsPerPage >= paintings.length}>
                         Next
                     </button>
                     <div id='contentbox'></div>
