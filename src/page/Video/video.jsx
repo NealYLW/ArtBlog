@@ -1,4 +1,4 @@
-import './paint.scss'
+import './video.scss'
 import {useNavigate} from 'react-router-dom'
 import { useState } from 'react';
 import { Avatar, Space, FloatButton  } from 'antd';

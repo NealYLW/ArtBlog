@@ -2,6 +2,7 @@ import './index.scss'
 import {useNavigate} from 'react-router-dom'
 import { Avatar, Space } from 'antd';
 import Paint from '../Paints/paint';
+import Video from '../Video/video';
 import amagoya1_ from '../image/amagoya1_.jpg'
 import light from '../image/a_light.jpg'
 import ins from '../image/ins.jpg'
@@ -11,6 +12,7 @@ const Layout = () => {
     const navigate = useNavigate()
     const goPics = () =>{
         navigate('/paint')
+        navigate('/video')
     }
 
     return(
@@ -41,7 +43,7 @@ const Layout = () => {
                         </a>
                     </li>
                     <li>
-                        <a href="">
+                        <a href="/Video">
                         <img id = "image1" src= {amagoya1_} width='100%' height='auto'/>
                         </a>
                     </li>
