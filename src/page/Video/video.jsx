@@ -1,48 +1,33 @@
-import './video.scss'
-import {useNavigate} from 'react-router-dom'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { Avatar, Space, FloatButton  } from 'antd';
-import Modal from 'react-modal'
+import Modal from 'react-modal';
 
 import ins from '../image/ins.jpg'
 import bilibili from '../image/bilibili.png'
 import youtube from '../image/youtube.png'
-
-// Import your images here
 import headerImage from '../image/testPaints.png';
-import painting1 from '../image/Screen.png'
-import painting2 from '../image/Screen.png'
-import painting3 from '../image/Screen.png'
+import './video.scss'
+import anima1 from '../V/Credit.mp4'
+import thumbnail1 from '../image/amagoya1_.jpg'
 
-// Add more paintings as needed
-const paintings = [
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting1, desc: 'Description for painting 1...........................................'},
-    {src: painting2, desc: 'Description for painting 2...........................................'},
-    {src: painting3, desc: 'Description for painting 3...........................................'},
+const videos = [
+    // replace with your own video data
+    {src: anima1, thumbnail: thumbnail1, title: 'Video 1', desc: 'Description for video 1'},
+    {src: anima1, thumbnail: thumbnail1, title: 'Video 2', desc: 'Description for video 2'},
+    {src: anima1, thumbnail: thumbnail1, title: 'Video 2', desc: 'Description for video 2'},
+    {src: anima1, thumbnail: thumbnail1, title: 'Video 2', desc: 'Description for video 2'},
+    {src: anima1, thumbnail: thumbnail1, title: 'Video 2', desc: 'Description for video 2'},
     // ...
 ]
 
-const Paint = () => {
+const Video = () => {
     // Navigation, jump to other pages
     const navigate = useNavigate()
 
-    // Pagination
-    const paintingsPerPage = 10;
-    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedVideo, setSelectedVideo] = useState(null);
 
-    // Pop up window to show the details of the painting
-    // First useState is to store the painting that is selected
-    const [selectedPainting, setSelectedPainting] = useState(null);
     // Second useState is to store the state of the modal (open or close)
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -52,13 +37,13 @@ const Paint = () => {
                 <div id='headmenu'>
                     <div id='sns'>
                         <div id='information'>
-                        <Space size={12} wrap>
-                            <a href="https://www.instagram.com/pepperoni_warrior/"><Avatar src={<img src={ins} alt="ins" />} /></a>
-                            <a href="https://space.bilibili.com/6749586/?spm_id_from=333.999.0.0"><Avatar src={<img src={bilibili} alt="ins" />} /></a>
-                            <a href="https://www.youtube.com/@lliao8227"><Avatar src={<img src={youtube} alt="ins" />} /></a>
-                        </Space>
-                        </div>
-                    </div>
+                            <Space size={12} wrap>
+                                <a href="https://www.instagram.com/pepperoni_warrior/"><Avatar src={<img src={ins} alt="ins" />} /></a>
+                                <a href="https://space.bilibili.com/6749586/?spm_id_from=333.999.0.0"><Avatar src={<img src={bilibili} alt="ins" />} /></a>
+                                <a href="https://www.youtube.com/@lliao8227"><Avatar src={<img src={youtube} alt="ins" />} /></a>
+                            </Space>
+                     </div> {/* close for id='information' */}
+                    </div> {/* close for id='sns' */}
                     <div id='hmenu'>
                         <ul>
                             <a href="/"><li><p>Main Page</p></li></a>
@@ -70,53 +55,37 @@ const Paint = () => {
                     <div id='hummenu'>
                         <div className='drawr'></div>
                     </div>
-                </div>
-            </div>
+                </div> {/* close for id='headmenu' */}
+            </div> {/* close for id='header' */}
             <div id='box'>
                 <div id='content'>
-                {/*  The header images */}
-                <img className="header" src={headerImage} alt="Header" style={{width: "100%", height: "auto"}}/>
-
-                {/*  The paintings */}
-                <div className="content-container">
-                    {/* slice each page so that it only show 'paintingsPerPage' Arts. */}
-                    {paintings.slice((currentPage - 1) * paintingsPerPage, currentPage * paintingsPerPage).map((painting, index) => (
-                        <div className="painting-container" key={index}>
-                            <img 
-                                src={painting.src} 
-                                alt={`Painting ${index + 1}`} 
-                                style={{width: "100%", height: "auto"}}
-                                /* Open and close Modal */
-                                onClick={ ()=>{
-                                    setSelectedPainting(painting);
-                                    setModalIsOpen(true);}
-                                }
-                            />
-                            <p className="description">{painting.desc}</p>
-                        </div>
+                    {/*  The header images */}
+                    <img className="header" src={headerImage} alt="Header" style={{width: "100%", height: "auto"}}/>
+                    {/*  The videos */}
+                    <div className='video-container'>
+                        {videos.map((video, index) => (
+                            <div className='video-thumbnail' key={index} onClick={() => {setSelectedVideo(video); setModalIsOpen(true);}}>
+                                <img src={video.thumbnail} alt={video.title} />
+                                <h2>{video.title}</h2>
+                                <p className='video-description'>{video.desc}</p>
+                            </div>
                         ))}
-                    </div>
-                    <button 
-                        onClick={() => {
-                            setCurrentPage(currentPage - 1);
-                            window.scrollTo(0, 0);
-                        }}
-                        disabled={currentPage === 1}>
-                        Previous
-                    </button>
-                    <button 
-                        onClick={() => {
-                            setCurrentPage(currentPage + 1);
-                            window.scrollTo(0, 0);
-                        }}
-                    disabled={currentPage * paintingsPerPage >= paintings.length}>
-                        Next
-                    </button>
-                    <div id='contentbox'></div>
-                    <div id='anime'></div>
-                    <div id='navbox'></div>
-                </div>
-            </div>
+                    </div> {/* Close for className='video-container' */}
+                    <Modal 
+                        isOpen={modalIsOpen} 
+                        onRequestClose={() => setModalIsOpen(false)}
+                    >
+                        <button onClick={() => setModalIsOpen(false)}>X</button>
+                        {selectedVideo && (
+                            <div>
+                                <h2>{selectedVideo.title}</h2>
+                                <video className='video-pop' src={selectedVideo.src} controls />
+                                <p>{selectedVideo.desc}</p>
+                            </div>
+                        )}
+                    </Modal>
+                </div> {/* Close for id='content' */}
+            </div> {/* Close for id='box' */}
             <div id='page'>
                 <div
                 style={{
@@ -126,20 +95,8 @@ const Paint = () => {
                 <FloatButton.BackTop />
                 </div>
             </div>
-            <Modal 
-                isOpen={modalIsOpen} 
-                onRequestClose={() => setModalIsOpen(false)}
-            >
-                <button onClick={() => setModalIsOpen(false)}>X</button>
-                {selectedPainting && (
-                    <img 
-                        src={selectedPainting.src} 
-                        alt="Selected painting" 
-                        style={{width: "100%", height: "auto"}}
-                    />
-    )}
-</Modal>
         </div>
     )
 }
-export default Paint
+
+export default Video
