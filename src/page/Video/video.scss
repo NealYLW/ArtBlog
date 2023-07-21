@@ -79,12 +79,16 @@
 .video-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  padding: 0 8vw
 }
 
 .video-thumbnail {
-  flex-basis: calc(33.33% - 20px);
-  margin-bottom: 20px;
+    flex: 1 0 calc(50% - 50px); /* Adjust the size of the thumbnails */
+    margin-bottom: 20px;
+    max-width: 400px; /* Maximum width of the thumbnails */
+    margin-left: 2vw;
+    margin-right: 2vw;
 }
 
 .video-description {
