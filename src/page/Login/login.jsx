@@ -1,7 +1,30 @@
 import './login.scss'
-import React from 'react'
+import React, {useState} from 'react'
 
 const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+        const emailPattern = "[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+";
+        setEmailError(!e.target.value.match(emailPattern));
+    }
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+        const passwordPattern = "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{7,30}";
+        setPasswordError(!e.target.value.match(passwordPattern));
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!emailError && !passwordError) {
+            console.log('Logged in'); // Here you can add your login logic
+        }
+    }
     return (
         <div className="content">
             <div className="login-wrapper">
@@ -24,16 +47,18 @@ const Login = () => {
                             <span className="input-tips">
                                 Email Address
                             </span>
-                            <input type="text" className="inputs" placeholder="Enter your email" pattern="[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+" required />
+                            <input type="email" className="inputs" placeholder="Enter your email" value={email} onChange={handleEmailChange} onBlur={handleEmailChange} required />
+                            {emailError && <span className='email-error'>Please enter a valid email address.</span>}
                         </div>
                         <div className="input-items">
                             <span className="input-tips">
                                 Password
                             </span>
-                            <input type="password" className="inputs" placeholder="Enter password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,30}" required/>
+                            <input type="password" className="inputs" placeholder="Enter password" value={password} onChange={handlePasswordChange} onBlur={handlePasswordChange} required/>
+                            {passwordError && <span className='password-error'>Password must contain at least one number and one uppercase and lowercase letter, and between 7 to 30 characters.</span>}
                             <span className="forgot">Forgot Password</span>
                         </div>
-                        <button className="btn">Log in</button>
+                        <button className="btn" onClick={handleSubmit}>Log in</button>
                         <div className="siginup-tips">
                             <span>Don't Have An Account?</span>
                             <span>Signup</span>
