@@ -8,11 +8,13 @@ import light from '../image/a_light.jpg'
 import ins from '../image/ins.jpg'
 import bilibili from '../image/bilibili.png'
 import youtube from '../image/youtube.png'
+import login_icon from '../image/login.jpg'
 const Layout = () => {
     const navigate = useNavigate()
     const goPics = () =>{
         navigate('/paint')
         navigate('/video')
+        navigate('/login')
     }
 
     return(
@@ -26,6 +28,7 @@ const Layout = () => {
                             <a href="https://www.instagram.com/pepperoni_warrior/"><Avatar src={<img src={ins} alt="ins" />} /></a>
                             <a href="https://space.bilibili.com/6749586/?spm_id_from=333.999.0.0"><Avatar src={<img src={bilibili} alt="ins" />} /></a>
                             <a href="https://www.youtube.com/@lliao8227"><Avatar src={<img src={youtube} alt="ins" />} /></a>
+                            <a href="/login"><Avatar src={<img src={login_icon} alt="ins" />} /></a>
                         
                         </Space>
                         </div>
