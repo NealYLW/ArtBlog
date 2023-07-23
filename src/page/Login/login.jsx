@@ -1,4 +1,5 @@
 import './login.scss'
+import { loginRequest } from '../../request/api';
 import React, {useState} from 'react'
 
 const Login = () => {
@@ -21,10 +22,17 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!emailError && !passwordError) {
-            console.log('Logged in'); // Here you can add your login logic
-        }
-    }
+        loginRequest({ email, password })
+            .then(data => {
+                // handle successful login here
+                console.log(data);
+            })
+            .catch(error => {
+                // handle login error here
+                console.log(error);
+            });
+    };
+
     return (
         <div className="content">
             <div className="login-wrapper">
