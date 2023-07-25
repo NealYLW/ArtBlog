@@ -11,4 +11,13 @@ export const loginRequest = (userData) => {
         });
 };
 
-export default loginRequest
+export const signupRequest = (userData) => {
+    return axiosInstance
+        .post('/signup', userData)
+        .then((response) => {
+            return response.data;
+        })
+        .catch((error) => {
+            throw error;
+        });
+};

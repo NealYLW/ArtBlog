@@ -1,12 +1,14 @@
 import './login.scss'
-import { loginRequest } from '../../request/api';
+import { loginRequest, signupRequest } from '../../request/api';
 import React, {useState} from 'react'
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+    const [isSignupMode, setIsSignupMode] = useState(false);
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -20,7 +22,11 @@ const Login = () => {
         setPasswordError(!e.target.value.match(passwordPattern));
     }
 
-    const handleSubmit = (e) => {
+    const handleConfirmPasswordChange = (e) => {
+        setConfirmPassword(e.target.value);
+    }
+
+    const handleLoginSubmit = (e) => {
         e.preventDefault();
         loginRequest({ email, password })
             .then(data => {
@@ -29,6 +35,24 @@ const Login = () => {
             })
             .catch(error => {
                 // handle login error here
+                console.log(error);
+            });
+    };
+
+    const handleSignupSubmit = (e) => {
+        e.preventDefault();
+        if (password !== confirmPassword) {
+            // handle password confirmation error here
+            console.log('Passwords do not match');
+            return;
+        }
+        signupRequest({ email, password })
+            .then(data => {
+                // handle successful signup here
+                console.log(data);
+            })
+            .catch(error => {
+                // handle signup error here
                 console.log(error);
             });
     };
@@ -50,7 +74,7 @@ const Login = () => {
                 </div>
                 <div className="right-login-form">
                     <div className="form-wrapper">
-                        <h1>Log in</h1>
+                        {isSignupMode ? <h1>Sign Up</h1> : <h1>Log in</h1>}
                         <div className="input-items">
                             <span className="input-tips">
                                 Email Address
@@ -64,12 +88,32 @@ const Login = () => {
                             </span>
                             <input type="password" className="inputs" placeholder="Enter password" value={password} onChange={handlePasswordChange} onBlur={handlePasswordChange} required/>
                             {passwordError && <span className='password-error'>Password must contain at least one number and one uppercase and lowercase letter, and between 7 to 30 characters.</span>}
-                            <span className="forgot">Forgot Password</span>
+                            {isSignupMode && (
+                                <div>
+                                    <span className="input-tips">
+                                        Confirm Password
+                                    </span>
+                                    <input type="password" className="inputs" placeholder="Enter password again" value={confirmPassword} onChange={handleConfirmPasswordChange} required/>
+                                </div>
+                            )}
+                            {!isSignupMode && <span className="forgot">Forgot Password</span>}
                         </div>
-                        <button className="btn" onClick={handleSubmit}>Log in</button>
+                        {isSignupMode 
+                            ? <button className="btn" onClick={handleSignupSubmit}>Sign Up</button>
+                            : <button className="btn" onClick={handleLoginSubmit}>Log in</button>
+                        }
                         <div className="siginup-tips">
-                            <span>Don't Have An Account?</span>
-                            <span>Signup</span>
+                            {!isSignupMode ? (
+                                <React.Fragment>
+                                    <span>Don't Have An Account?</span>
+                                    <span onClick={() => setIsSignupMode(true)}>Signup</span>
+                                </React.Fragment>
+                            ) : (
+                                <React.Fragment>
+                                    <span>Already have an account?</span>
+                                    <span onClick={() => setIsSignupMode(false)}>Log in</span>
+                                </React.Fragment>
+                            )}
                         </div>
                         <div className="other-login">
                             <div className="divider">
