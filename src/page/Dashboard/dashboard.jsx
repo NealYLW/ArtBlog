@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../request/index.jsx';
 import { DesktopOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import EditPainting from '../EditPainting/EditPainting.jsx';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -17,8 +18,8 @@ function getItem(label, key, icon, children) {
 const items = [
   getItem('Information', '1', <PieChartOutlined />),
   getItem('Arts', '2', <DesktopOutlined />),
-  getItem('Paintings', 'sub1', <UserOutlined />, []),
-  getItem('Videos', 'sub2', <TeamOutlined />, []),
+  getItem('Paintings', '3', <UserOutlined />),
+  getItem('Videos', '4', <TeamOutlined />),
 ];
 
 const Dashboard = () => {
@@ -104,7 +105,9 @@ const Dashboard = () => {
                   <h2>Paintings: {paintingsCount}</h2>
                   <h2>Videos: {videosCount}</h2>
                 </div>
-              ) : null
+              ) : selectedMenuItem === '3' ? (
+                    <EditPainting/>
+              ): null
             )}
           </div>
         </Content>
