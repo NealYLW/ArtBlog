@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../request/index.jsx';
-import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { DesktopOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
+
 const { Header, Content, Footer, Sider } = Layout;
+
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -17,24 +13,26 @@ function getItem(label, key, icon, children) {
     label,
   };
 }
+
 const items = [
   getItem('Information', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4'),
-    getItem('Alex', '5'),
-  ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
+  getItem('Arts', '2', <DesktopOutlined />),
+  getItem('Paintings', 'sub1', <UserOutlined />, []),
+  getItem('Videos', 'sub2', <TeamOutlined />, []),
 ];
-
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [paintingsCount, setPaintingsCount] = useState(0);
+  const [videosCount, setVideosCount] = useState(0);
+
+  // Introduce a new state variable to keep track of the selected menu item
+  const [selectedMenuItem, setSelectedMenuItem] = useState('1');
+
   const fetchUserInfo = () => {
-    // Replace 'userId' with the actual ID of the current user
     axiosInstance.get(`/users/4`)
       .then(response => {
         setUser(response.data);
@@ -44,19 +42,46 @@ const Dashboard = () => {
         console.error('Failed to fetch user information:', error);
       });
   }
-  // Fetch user information on component mount
+
+  const fetchPaintingsCount = () => {
+    axiosInstance.get(`/users/4/paintings/count`)
+      .then(response => {
+        setPaintingsCount(response.data.count);
+      })
+      .catch(error => {
+        console.error('Failed to fetch paintings count:', error);
+      });
+  }
+
+  const fetchVideosCount = () => {
+    axiosInstance.get(`/users/4/videos/count`)
+      .then(response => {
+        setVideosCount(response.data.count);
+      })
+      .catch(error => {
+        console.error('Failed to fetch videos count:', error);
+      });
+  }
+
   useEffect(() => {
     fetchUserInfo();
+    fetchPaintingsCount();
+    fetchVideosCount();
   }, []);
- 
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const onMenuItemClick = (e) => {
+    setSelectedMenuItem(e.key);
+  }
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} onSelect={onMenuItemClick} />
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }} />
@@ -67,12 +92,19 @@ const Dashboard = () => {
           </Breadcrumb>
           <div style={{ padding: 24, minHeight: 360, background: colorBgContainer }}>
             {loading ? (
-            'Loading user information...'
+              'Loading...'
             ) : (
-            <div>
-                <h2>{user && user.id}</h2>
-                <p>{user && user.email}</p>
-            </div>
+              selectedMenuItem === '1' ? (
+                <div>
+                  <h2>User ID:{user && user.id}</h2>
+                  <p>User Email:{user && user.email}</p>
+                </div>
+              ) : selectedMenuItem === '2' ? (
+                <div>
+                  <h2>Paintings: {paintingsCount}</h2>
+                  <h2>Videos: {videosCount}</h2>
+                </div>
+              ) : null
             )}
           </div>
         </Content>
@@ -83,5 +115,5 @@ const Dashboard = () => {
     </Layout>
   );
 };
-export default Dashboard;
 
+export default Dashboard;
