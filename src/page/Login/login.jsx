@@ -1,6 +1,7 @@
 import './login.scss'
 import { loginRequest, signupRequest } from '../../request/api';
 import React, {useState} from 'react'
+import {useNavigate} from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -9,6 +10,8 @@ const Login = () => {
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [isSignupMode, setIsSignupMode] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -32,6 +35,9 @@ const Login = () => {
             .then(data => {
                 // handle successful login here
                 console.log(data);
+
+                // redirect to dashboard
+                navigate("/dashboard");
             })
             .catch(error => {
                 // handle login error here
