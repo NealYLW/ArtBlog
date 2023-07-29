@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, List, Upload } from 'antd';
+import { Button, Form, Input, List, Upload, message, notification, Image } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import  axiosInstance  from '../../request/index.jsx';
 
@@ -20,6 +20,11 @@ const Paintings = () => {
     setEditingFileList(fileList);
   }
 
+  const openNotification = (type, message) => {
+    notification[type]({
+      message: message,
+    })
+  }
   const fetchPaintings = () => {
     // Fetch the paintings from your server and update the state
     // You need to implement this function in your server code
@@ -53,9 +58,12 @@ const Paintings = () => {
       .then(response => {
         // Fetch the paintings again to update the list
         fetchPaintings();
+        form.resetFields();
+        openNotification('success', 'Painting added successfully!');
       })
       .catch(error => {
         console.error('Failed to add painting:', error);
+        openNotification('error', 'Failed to add painting!');
       });
     }
 
@@ -126,29 +134,35 @@ const Paintings = () => {
           >
             {editingId === item.id ? (
               <Form form={editingForm} layout="vertical" onFinish={updatePainting}>
-              <Form.Item name="title" label="Title" rules={[{ required: true }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="description" label="Description" rules={[{ required: true }]}>
-                <Input.TextArea />
-              </Form.Item>
-              <Form.Item label="Upload">
-                <Upload.Dragger name="file" fileList={editingFileList} onChange={handleEditUpload} beforeUpload={() => false}> 
-                  <p className="ant-upload-drag-icon">
-                    <UploadOutlined />
-                  </p>
-                  <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                </Upload.Dragger>
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">Update Painting</Button>
-              </Form.Item>
-            </Form>
+                <Form.Item name="title" label="Title" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="description" label="Description" rules={[{ required: true }]}>
+                  <Input.TextArea />
+                </Form.Item>
+                <Form.Item label="Upload">
+                  <Upload.Dragger name="file" fileList={editingFileList} onChange={handleEditUpload} beforeUpload={() => false}> 
+                    <p className="ant-upload-drag-icon">
+                      <UploadOutlined />
+                    </p>
+                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                  </Upload.Dragger>
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">Update Painting</Button>
+                </Form.Item>
+              </Form>
             ) : (
-              <List.Item.Meta
-                title={item.title}
-                description={item.description}
-              />
+              <>
+                <List.Item.Meta
+                  title={item.title}
+                  description={item.description}
+                />
+                <Image
+                  width={200}
+                  src={`http://localhost:3000/uploads/${item.image_url}`}
+                />
+              </>
             )}
           </List.Item>
         )}
