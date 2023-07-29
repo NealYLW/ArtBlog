@@ -3,6 +3,7 @@ import axiosInstance from '../../request/index.jsx';
 import { DesktopOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import EditPainting from '../EditPainting/EditPainting.jsx';
+import EditVideo from '../EditVideo/EditVideo.jsx';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -107,6 +108,8 @@ const Dashboard = () => {
                 </div>
               ) : selectedMenuItem === '3' ? (
                     <EditPainting/>
+              ):selectedMenuItem === '4' ? (
+                    <EditVideo/>
               ): null
             )}
           </div>

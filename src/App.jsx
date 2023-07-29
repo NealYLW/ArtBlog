@@ -1,26 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import Layout from './page/layout/layout'
-import { BrowserRouter, Routes, Route} from 'react-router-dom'
-import Paint from './page/Paints/paint'
-import Video from './page/Video/video'
-import Login from './page/Login/login'
-import Dashboard from './page/Dashboard/dashboard'
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate} from 'react-router-dom';
+import axiosInstance from '../src/request/index.jsx';
+import { useAuthStatus } from './useAuthStatus';
+import Paint from './page/Paints/paint';
+import Video from './page/Video/video';
+import Login from './page/Login/login';
+import Dashboard from './page/Dashboard/dashboard';
+import Layout from './page/layout/layout';
 
-function App() {
-    return (
-    <BrowserRouter>
+function AppRoutes() {
+  const navigate = useNavigate();
+  const [isAuthenticated, setAuthenticated] = useAuthStatus();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  }, []);
+  
+  // redirect to login page if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
+
+  return (
     <Routes>
-        <Route path = ''  element = {<Layout />}></Route>
-        <Route path = '/paint' element = {<Paint />}></Route>
-        <Route path = '/video' element = {<Video />}></Route>
-        <Route path = '/login' element = {<Login />}></Route>
-        <Route path = '/dashboard' element = {<Dashboard />}></Route>
+      <Route path = ''  element = {<Layout />}></Route>
+      <Route path = '/paint' element = {<Paint />}></Route>
+      <Route path = '/video' element = {<Video />}></Route>
+      <Route path = '/login' element = {<Login />}></Route>
+      <Route path = '/dashboard' element = {<Dashboard />}></Route>
     </Routes>
-    </BrowserRouter>
-    )
-    
+  );
 }
 
-export default App
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
+}
+
+export default App;

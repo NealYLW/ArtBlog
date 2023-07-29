@@ -2,6 +2,7 @@ import './login.scss'
 import { loginRequest, signupRequest } from '../../request/api';
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
+import axiosInstance from '../../request/index.jsx';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -33,14 +34,17 @@ const Login = () => {
         e.preventDefault();
         loginRequest({ email, password })
             .then(data => {
-                // handle successful login here
-                console.log(data);
-
-                // redirect to dashboard
-                navigate("/dashboard");
+                console.log('Response data:', data);  // Updated line
+                if (data.token) {
+                  // Save the token to local storage
+                  localStorage.setItem('token', data.token);
+                  // Set the token as the default authorization header
+                  axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+                  // redirect to dashboard
+                  navigate("/dashboard");
+                }
             })
             .catch(error => {
-                // handle login error here
                 console.log(error);
             });
     };

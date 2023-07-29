@@ -4,7 +4,8 @@ export const loginRequest = (userData) => {
     return axiosInstance
         .post('/login', userData)
         .then((response) => {
-            return response.data;
+            console.log('api:',response);
+            return response;
         })
         .catch((error) => {
             throw error;
