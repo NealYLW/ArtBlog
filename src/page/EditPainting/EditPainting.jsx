@@ -2,126 +2,85 @@ import React, { useState, useEffect } from 'react';
 import { Button, Form, Input, List, Upload, message, notification, Image } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import  axiosInstance  from '../../request/index.jsx';
+import { useSelector, useDispatch } from 'react-redux';
+import {fetchPaintings, addPainting as addPaintingAction,
+  updatePainting as updatePaintingAction, deletePainting as deletePaintingAction} from '../../actions/paintingsActions.jsx';  
 
 const Paintings = () => {
-  const [paintings, setPaintings] = useState([]);
+  // Add a new state variable to keep track of the file list
+  // file list is the list of files that are currently being uploaded
   const [fileList, setFileList] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editingFileList, setEditingFileList] = useState([]);
   const [form] = Form.useForm();
   const [editingForm] = Form.useForm();
 
-  
   const handleUpload = ({fileList}) => {
     setFileList(fileList);
-    }
+  }
 
   const handleEditUpload = ({fileList}) => {
     setEditingFileList(fileList);
   }
 
-  const openNotification = (type, message) => {
-    notification[type]({
-      message: message,
-    })
+  const startEditing = (id, title, description) => {
+    setEditingId(id);
+    editingForm.setFieldsValue({ title, description });
   }
-  const fetchPaintings = () => {
-    // Fetch the paintings from your server and update the state
-    // You need to implement this function in your server code
 
+  // Get the user ID from Redux store
+  const userId = localStorage.getItem('userId');
 
+  const dispatch = useDispatch();
+  // Instead of useState, get the paintings from Redux store
+  const paintings = useSelector(state => state.paintings.data); // this path depends on your store structure
+  const errorMessage = useSelector(state => state.paintings.error); // if you want to show error messages
 
-    axiosInstance.get(`/users/4/paintings`)
-      .then(response => {
-        setPaintings(response.data);
-      })
-      .catch(error => {
-        console.error('Failed to fetch paintings:', error);
-      });
-  }
+  // Fetch the paintings when the component mounts
+  useEffect(() => {
+      dispatch(fetchPaintings(userId)); // assuming you have userId available
+  }, [dispatch]);
 
   const addPainting = (values) => {
-    // Send a POST request to your server to add a new painting
-    // You need to implement this function in your server code
-    const formData = new FormData();
-    formData.append('title', values.title);
-    formData.append('description', values.description);
-    // Add the file to the request body
-    if (fileList.length > 0) {
-        formData.append('image', fileList[0].originFileObj);
-    }
-    axiosInstance.post(`/users/4/paintings`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then(response => {
-        // Fetch the paintings again to update the list
-        fetchPaintings();
-        form.resetFields();
-        openNotification('success', 'Painting added successfully!');
-      })
-      .catch(error => {
-        console.error('Failed to add painting:', error);
-        openNotification('error', 'Failed to add painting!');
-      });
-    }
-
-  const deletePainting = (id) => {
-    // Send a DELETE request to your server to delete a painting
-    // You need to implement this function in your server code
-    axiosInstance.delete(`/users/4/paintings/${id}`)
-      .then(response => {
-        // Fetch the paintings again to update the list
-        fetchPaintings();
-      })
-      .catch(error => {
-        console.error('Failed to delete painting:', error);
-      });
+    console.log('Component Values:', values);
+    console.log('Component FileList:', fileList);
+    console.log('Component UserID:', userId);
+      const formData = new FormData();
+      formData.append('title', values.title);
+      formData.append('description', values.description);
+      if (fileList.length > 0) {
+          formData.append('image', fileList[0].originFileObj);
+      }
+      dispatch(addPaintingAction(values, fileList, userId)); // dispatch the action instead of direct API call
+      form.resetFields();
   }
 
-    const startEditing = (id) => {
-      setEditingId(id);
-    }
+  const deletePainting = (id) => {
+      dispatch(deletePaintingAction(userId, id));
+  }
 
-    const stopEditing = () => {
-      setEditingId(null);
-    }
-
-    const updatePainting = (values) => {
+  const updatePainting = (values) => {
       const formData = new FormData();
       formData.append('title', values.title);
       formData.append('description', values.description);
       if (editingFileList.length > 0) {
-        formData.append('image', editingFileList[0].originFileObj);
+          formData.append('image', editingFileList[0].originFileObj);
       }
-      axiosInstance.put(`/users/4/paintings/${editingId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-        .then(response => {
-          fetchPaintings();
-          setEditingId(null);
-          setEditingFileList([]);
-        })
-        .catch(error => {
-          console.error('Failed to update painting:', error);
-        });
-    }
-
-  // Fetch the paintings when the component mounts
-  useEffect(() => {
-    fetchPaintings();
-  }, []);
-
+      dispatch(updatePaintingAction(userId, editingId, formData));
+      setEditingId(null);
+      setEditingFileList([]);
+  }
   return (
     <div>
       <h2>Your Paintings</h2>
+      {console.log('Paintings Data:', paintings)}
       <List
         itemLayout="horizontal"
         dataSource={paintings}
-        renderItem={item => (
+        renderItem={item => {
+          
+          if (!item) return null;  // Skip rendering undefined or null items
+          return(
           <List.Item
             actions={[
               <Button type="primary" onClick={() => deletePainting(item.id)}>Delete</Button>,
@@ -165,7 +124,8 @@ const Paintings = () => {
               </>
             )}
           </List.Item>
-        )}
+          );
+        }}
       />
       <h2>Add a New Painting</h2>
       <Form form={form} layout="vertical" onFinish={addPainting}>
@@ -195,6 +155,5 @@ const Paintings = () => {
     </div>
   );
 };
-
 
 export default Paintings;

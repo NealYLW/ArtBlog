@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate} from 'react-router-dom';
 import axiosInstance from '../src/request/index.jsx';
 import { useAuthStatus } from './useAuthStatus';
+import { Provider } from 'react-redux';
 import Paint from './page/Paints/paint';
 import Video from './page/Video/video';
 import Login from './page/Login/login';
 import Dashboard from './page/Dashboard/dashboard';
 import Layout from './page/layout/layout';
+
+import store from './store.jsx';
 
 function AppRoutes() {
   const navigate = useNavigate();
@@ -39,9 +42,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <Provider store={store}>  
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </Provider>
   );
 }
 

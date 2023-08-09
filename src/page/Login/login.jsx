@@ -38,6 +38,7 @@ const Login = () => {
                 if (data.token) {
                   // Save the token to local storage
                   localStorage.setItem('token', data.token);
+                  localStorage.setItem('userId', data.userId);
                   // Set the token as the default authorization header
                   axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
                   // redirect to dashboard

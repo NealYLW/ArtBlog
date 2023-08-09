@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../request/index.jsx';
 import { DesktopOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Button, Layout, Menu, theme } from 'antd';
 import EditPainting from '../EditPainting/EditPainting.jsx';
 import EditVideo from '../EditVideo/EditVideo.jsx';
 
@@ -21,6 +21,7 @@ const items = [
   getItem('Arts', '2', <DesktopOutlined />),
   getItem('Paintings', '3', <UserOutlined />),
   getItem('Videos', '4', <TeamOutlined />),
+  getItem('Logout', '5', <TeamOutlined />),
 ];
 
 const Dashboard = () => {
@@ -78,6 +79,19 @@ const Dashboard = () => {
   const onMenuItemClick = (e) => {
     setSelectedMenuItem(e.key);
   }
+  const handleLogout = () => {
+    axiosInstance.post(`/logout`, { token: localStorage.getItem('token') })
+    .then(response => {
+      console.log("Logged out successfully");
+    })
+    .catch(error => {
+      console.log("Failed to logout");
+    });
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.href = '/';
+
+  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -110,12 +124,14 @@ const Dashboard = () => {
                     <EditPainting/>
               ):selectedMenuItem === '4' ? (
                     <EditVideo/>
+              ): selectedMenuItem === '5' ? (
+                    <Button onClick={handleLogout}> Logout </Button>
               ): null
             )}
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          Your Footer Here
+          Modify your Art Works
         </Footer>
       </Layout>
     </Layout>

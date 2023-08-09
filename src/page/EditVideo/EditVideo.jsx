@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, List, Upload, message, notification, Image } from 'antd';
+import { Button, Form, Input, List, Upload, message, notification, } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import axiosInstance from '../../request/index.jsx';
 
@@ -49,6 +49,7 @@ const Videos = () => {
       })
       .then(response => {
         fetchVideos();
+ 
         form.resetFields();
         openNotification('success', 'Video added successfully!');
       })
@@ -145,10 +146,14 @@ const Videos = () => {
                   title={item.title}
                   description={item.description}
                 />
-                <Image
-                  width={200}
-                  src={`http://localhost:3000/uploads/${item.image_url}`}
-                />
+                <video
+                  width="320"
+                  height="240"
+                  controls
+                >
+                  <source src={`http://localhost:3000/uploads/${item.video_url}`} type="video/mp4"/>
+                  Your browser does not support the video tag.
+                </video>
               </>
             )}
           </List.Item>

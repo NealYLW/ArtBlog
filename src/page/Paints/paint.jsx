@@ -1,8 +1,9 @@
 import './paint.scss'
 import {useNavigate} from 'react-router-dom'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, Space, FloatButton  } from 'antd';
 import Modal from 'react-modal'
+import axiosInstance from '../../request/index.jsx';
 
 import ins from '../image/ins.jpg'
 import bilibili from '../image/bilibili.png'
@@ -13,6 +14,7 @@ import headerImage from '../image/testPaints.png';
 import painting1 from '../image/Screen.png'
 import painting2 from '../image/Screen.png'
 import painting3 from '../image/Screen.png'
+import axios from 'axios';
 
 // Add more paintings as needed
 const paintings = [
@@ -45,6 +47,14 @@ const Paint = () => {
     const [selectedPainting, setSelectedPainting] = useState(null);
     // Second useState is to store the state of the modal (open or close)
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    // fetch paintings from the database
+    const [paintings, setPaintings] = useState([]);
+
+    useEffect(() => {
+        // fetch paintings from the database
+        // setPaintings(paintingsFromDatabase)
+        axiosInstance.get(`/users/4/paintings`)
+    });
 
     return (
         <div id='all'>
