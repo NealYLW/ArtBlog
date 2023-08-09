@@ -34,6 +34,10 @@ const Paintings = () => {
   const dispatch = useDispatch();
   // Instead of useState, get the paintings from Redux store
   const paintings = useSelector(state => state.paintings.data); // this path depends on your store structure
+
+  // ONLY FOR TESTING
+  // Filter out any undefined data
+  const validPaintings = paintings.filter(p => p && p.id);
   const errorMessage = useSelector(state => state.paintings.error); // if you want to show error messages
 
   // Fetch the paintings when the component mounts
@@ -76,7 +80,7 @@ const Paintings = () => {
       {console.log('Paintings Data:', paintings)}
       <List
         itemLayout="horizontal"
-        dataSource={paintings}
+        dataSource={validPaintings}
         renderItem={item => {
           
           if (!item) return null;  // Skip rendering undefined or null items
@@ -124,7 +128,7 @@ const Paintings = () => {
               </>
             )}
           </List.Item>
-          );
+          )
         }}
       />
       <h2>Add a New Painting</h2>
